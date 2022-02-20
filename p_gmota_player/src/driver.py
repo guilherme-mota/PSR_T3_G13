@@ -26,13 +26,16 @@ class Driver:
         greenTeam = rospy.get_param('/green_players')
         blueTeam = rospy.get_param('/blue_players')
 
-        # Print Player team
+        # Print Player Information
         if (self.name == redTeam[0]) or (self.name == redTeam[1]) or (self.name == redTeam[2]):
             print('Player team is Red')
+            print('Player ' + self.name + ' hunts ' + str(greenTeam) + ' and runs from ' + str(blueTeam))
         elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
             print('Player team is Green')
+            print('Player ' + self.name + ' hunts ' + str(blueTeam) + ' and runs from ' + str(redTeam))
         elif (self.name == blueTeam[0]) or (self.name == blueTeam[1]) or (self.name == blueTeam[2]):
             print('Player team is Blue')
+            print('Player ' + self.name + ' hunts ' + str(redTeam) + ' and runs from ' + str(greenTeam))
 
         self.publisher_command = rospy.Publisher('/' + self.name + '/cmd_vel', Twist, queue_size=1)
 
