@@ -19,7 +19,20 @@ class Driver:
 
         self.name = rospy.get_name()
         self.name = self.name.strip('/')  # Remove initial /
-        print('My player name is ' + self.name)
+        print('Player name is ' + self.name)  # Print Player name
+
+        # Get Game Parameters
+        redTeam = rospy.get_param('/red_players')
+        greenTeam = rospy.get_param('/green_players')
+        blueTeam = rospy.get_param('/blue_players')
+
+        # Print Player team
+        if (self.name == redTeam[0]) or (self.name == redTeam[1]) or (self.name == redTeam[2]):
+            print('Player team is Red')
+        elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
+            print('Player team is Green')
+        elif (self.name == blueTeam[0]) or (self.name == blueTeam[1]) or (self.name == blueTeam[2]):
+            print('Player team is Blue')
 
         self.publisher_command = rospy.Publisher('/' + self.name + '/cmd_vel', Twist, queue_size=1)
 
@@ -77,6 +90,7 @@ def main():
     # ----------------------------
     rospy.init_node('p_gmota_driver', anonymous=False)
 
+    # Start driving
     driver = Driver()
 
     rospy.spin()
