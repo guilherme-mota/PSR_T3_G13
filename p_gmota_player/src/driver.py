@@ -53,11 +53,8 @@ class Driver:
         x = goal_in_base_link.pose.position.x
         y = goal_in_base_link.pose.position.y
 
-        distance_to_goal = math.sqrt(x ** 2 + y ** 2)
-
         self.angle = math.atan2(y, x)
-        self.speed = max(minumum_speed, 0.5 * distance_to_goal)
-        self.speed = min(maximum_speed, self.speed)
+        self.speed = 0.5
 
     def sendCommandCallback(self, event):
         print('Sending Twist Command')
