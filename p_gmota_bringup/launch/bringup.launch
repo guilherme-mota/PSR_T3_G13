@@ -7,6 +7,7 @@
     <arg name="x_pos" default="0"/>
     <arg name="y_pos" default="0"/>
     <arg name="z_pos" default="0"/>
+    <arg name="driver" default="false"/>
 
     <group ns="$(arg player_name)">
         <param name="tf_prefix" value="$(arg player_name)"/>
@@ -23,7 +24,9 @@
 
         <group if="$(arg visualize)">
             <!-- Include visualize.launch -->
-            <include file="$(find p_gmota_bringup)/launch/visualize.launch"/>
+            <include file="$(find p_gmota_bringup)/launch/visualize.launch">
+                <arg name="player_name" value="$(arg player_name)"/>
+            </include>
         </group>
     </group>
 

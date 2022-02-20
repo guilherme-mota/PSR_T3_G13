@@ -1,5 +1,7 @@
 <launch>
-    <!-- Launch rviz, loading configuration file -->
+    <arg name="player_name" default="visualize"/>
+
+    <!-- Launch rviz, loading configuration file visualize.rviz -->
     <node name="rviz" pkg="rviz" type="rviz"
-          args="--display-config $(find p_gmota_bringup)/config/visualize.rviz" required="false"/>
+          args="--display-config $(find p_gmota_bringup)/config/$(arg player_name).rviz" required="false"/>
 </launch>
