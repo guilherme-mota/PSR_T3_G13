@@ -1,5 +1,5 @@
 <launch>
-    <!--Bloco 1: argumentos do launch file.-->
+    <!-- Argumentos do launch file-->
     <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
     <arg name="player_name" default="p_gmota"/>
     <arg name="player_color" default="Red"/>

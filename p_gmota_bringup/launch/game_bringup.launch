@@ -1,0 +1,17 @@
+<launch>
+    <rosparam command="load" file="$(find p_gmota_bringup)/params/game.yaml"/>
+
+    <!-- Red Team -->
+    <include file="$(find p_gmota_bringup)/launch/bringup.launch">
+        <arg name="player_name" value="red1"/>
+        <arg name="player_color" value="Red"/>
+        <arg name="visualize" value="false"/>
+        <arg name="x_pos" value="0"/>
+        <arg name="y_pos" value="0"/>
+        <arg name="z_pos" value="0"/>
+    </include>
+
+    <!-- Green Team -->
+
+    <!-- Blue Team -->
+</launch>
