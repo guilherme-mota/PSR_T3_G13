@@ -4,9 +4,9 @@
     <arg name="player_name" default="p_gmota"/>
     <arg name="player_color" default="Red"/>
     <arg name="visualize" default="true"/>
-    <arg name="x_pos" default="0.0"/>
-    <arg name="y_pos" default="-2.0"/>
-    <arg name="z_pos" default="0.0"/>
+    <arg name="x_pos" default="0"/>
+    <arg name="y_pos" default="0"/>
+    <arg name="z_pos" default="0"/>
 
     <group ns="$(arg player_name)">
         <param name="tf_prefix" value="$(arg player_name)"/>
