@@ -1,5 +1,5 @@
 <launch>
-    <arg name="player_name" default="visualize"/>
+    <arg name="player_name" default="red1"/>
 
     <!-- Launch rviz, loading configuration file visualize.rviz -->
     <node name="rviz" pkg="rviz" type="rviz"
