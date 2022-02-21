@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 
-import numpy
+import numpy as np
 import cv2
 import copy
 import math
@@ -11,23 +11,6 @@ from geometry_msgs.msg import Twist, PoseStamped
 import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for PoseStamped
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-
-
-class Camera:
-    def __init__(self):
-        cv2.namedWindow("Image window", 1)
-        self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/red1/camera/rgb/image_raw", Image, self.callback)
-
-    def callback(self, data):
-        cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-
-        print(type(cv_image))
-        # if cols > 60 and rows > 60:
-        #     cv2.Circle(cv_image, (50, 50), 10, 255)
-
-        cv2.imshow("Image window", cv_image)
-        cv2.waitKey(3)
 
 
 class Driver:
@@ -66,6 +49,24 @@ class Driver:
         self.timer = rospy.Timer(rospy.Duration(0.1), self.sendCommandCallback)
 
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
+
+        self.bridge = CvBridge()
+        self.image_sub = rospy.Subscriber("/red1/camera/rgb/image_raw", Image, self.callback)
+
+    def callback(self, data):
+        cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
+
+        red_mask = cv2.inRange(cv_image, (0, 0, 0), (0, 0, 255))
+        green_mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
+        blue_mask = cv2.inRange(cv_image, (0, 0, 0), (255, 0, 0))
+
+        image_processed = copy.deepcopy(cv_image)
+        image_processed[np.logical_not(green_mask)] = 0
+
+        cv2.imshow("Camera Image", cv_image)
+        cv2.imshow("Mask", green_mask)
+        cv2.imshow("Image Processed", image_processed)
+        cv2.waitKey(3)
 
     def goalReceivedCallback(self, msg):
         print('Received New Goal on Frame ID ' + msg.header.frame_id)
@@ -114,7 +115,7 @@ def main():
     # ----------------------------
     rospy.init_node('p_gmota_driver', anonymous=False)
 
-    camera = Camera()
+    # camera = Camera()
 
     # Start driving
     driver = Driver()
