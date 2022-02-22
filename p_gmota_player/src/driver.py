@@ -34,12 +34,15 @@ class Driver:
         if (self.name == redTeam[0]) or (self.name == redTeam[1]) or (self.name == redTeam[2]):
             print('Player team is Red')
             print('Player ' + self.name + ' hunts ' + str(greenTeam) + ' and runs from ' + str(blueTeam))
+            self.prey = "GREEN"
         elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
             print('Player team is Green')
             print('Player ' + self.name + ' hunts ' + str(blueTeam) + ' and runs from ' + str(redTeam))
+            self.prey = "BLUE"
         elif (self.name == blueTeam[0]) or (self.name == blueTeam[1]) or (self.name == blueTeam[2]):
             print('Player team is Blue')
             print('Player ' + self.name + ' hunts ' + str(redTeam) + ' and runs from ' + str(greenTeam))
+            self.prey = "RED"
 
         self.publisher_command = rospy.Publisher('/' + self.name + '/cmd_vel', Twist, queue_size=1)
 
@@ -56,15 +59,18 @@ class Driver:
     def callback(self, data):
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
 
-        red_mask = cv2.inRange(cv_image, (0, 0, 0), (0, 0, 255))
-        green_mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
-        blue_mask = cv2.inRange(cv_image, (0, 0, 0), (255, 0, 0))
+        if self.prey == "GREEN":
+            mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
+        elif self.prey == "RED":
+            mask = cv2.inRange(cv_image, (0, 0, 0), (0, 0, 255))
+        elif self.prey == "BLUE":
+            mask = cv2.inRange(cv_image, (0, 0, 0), (255, 0, 0))
 
         image_processed = copy.deepcopy(cv_image)
-        image_processed[np.logical_not(green_mask)] = 0
+        image_processed[np.logical_not(mask)] = 0
 
         cv2.imshow("Camera Image", cv_image)
-        cv2.imshow("Mask", green_mask)
+        cv2.imshow("Mask", mask)
         cv2.imshow("Image Processed", image_processed)
         cv2.waitKey(3)
 
