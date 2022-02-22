@@ -99,7 +99,11 @@ class Driver:
         x = int(centroids[max_area_Label, 0])
         y = int(centroids[max_area_Label, 1])
         if x_last != None and y_last != None:
-            cv2.line(cv_image, (x, y), (x_last, y_last), (255, 255, 255), 2, cv2.LINE_4)
+            # Cross On Centroid
+            cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+            cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+            cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
+            cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
         x_last = x
         y_last = y
 
