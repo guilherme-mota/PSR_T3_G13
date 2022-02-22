@@ -12,6 +12,11 @@ import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for Pos
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 
+# GLOBAL VARIABLES
+# -----------------------------------------------------
+x_last = None
+y_last = None
+
 
 class Driver:
     def __init__(self):
@@ -69,9 +74,37 @@ class Driver:
         image_processed = copy.deepcopy(cv_image)
         image_processed[np.logical_not(mask)] = 0
 
-        cv2.imshow("Camera Image", cv_image)
+        # cv2.imshow("Camera Image", cv_image)
         cv2.imshow("Mask", mask)
         cv2.imshow("Image Processed", image_processed)
+
+        # Get Object
+        image_grey = cv2.cvtColor(image_processed, cv2.COLOR_BGR2GRAY)
+        _, thresh = cv2.threshold(image_grey, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(thresh, 4, cv2.CV_32S)
+
+        # Get Object Max Area Centroid
+        max_area = 0
+        for i in range(num_labels):
+            if i != 0 and max_area < stats[i, cv2.CC_STAT_AREA]:
+                max_area = stats[i, cv2.CC_STAT_AREA]
+                max_area_Label = i
+
+        mask2 = cv2.inRange(labels, max_area_Label, max_area_Label)
+        mask2 = mask2.astype(bool)
+        cv_image[mask2] = (0, 255, 0)
+
+        # Draw Line on Centroid
+        global x_last, y_last
+        x = int(centroids[max_area_Label, 0])
+        y = int(centroids[max_area_Label, 1])
+        if x_last != None and y_last != None:
+            cv2.line(cv_image, (x, y), (x_last, y_last), (255, 255, 255), 2, cv2.LINE_4)
+        x_last = x
+        y_last = y
+
+        cv2.imshow("Camera Image", cv_image)
+
         cv2.waitKey(3)
 
     def goalReceivedCallback(self, msg):
