@@ -1,5 +1,5 @@
 <launch>
-    <arg name="player_name" default="p_gmota"/>
+    <arg name="player_name" default="red1"/>
 
     <group ns="$(arg player_name)">
         <node pkg="p_gmota_bringup" type="myteleop.py" name="myteleop" output="screen">
