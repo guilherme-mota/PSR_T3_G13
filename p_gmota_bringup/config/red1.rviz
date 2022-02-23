@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /LaserScan1
       Splitter Ratio: 0.5
     Tree Height: 260
   - Class: rviz/Selection
@@ -208,6 +207,16 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: false
+      Name: Map
+      Topic: /red1/map
+      Unreliable: false
+      Use Timestamp: false
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -252,9 +261,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.2353987842798233
+      Pitch: 0.21039879322052002
       Target Frame: <Fixed Frame>
-      Yaw: 1.2203965187072754
+      Yaw: 1.060396671295166
     Saved: ~
 Window Geometry:
   Displays:
