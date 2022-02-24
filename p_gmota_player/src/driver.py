@@ -64,8 +64,6 @@ class Driver:
     def callback(self, data):
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
 
-        cv2.imshow("Camera Image", cv_image)
-
         if self.prey == "GREEN":
             mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
         elif self.prey == "RED":
@@ -76,7 +74,6 @@ class Driver:
         image_processed = copy.deepcopy(cv_image)
         image_processed[np.logical_not(mask)] = 0
 
-        # cv2.imshow("Camera Image", cv_image)
         cv2.imshow("Mask", mask)
         cv2.imshow("Image Processed", image_processed)
 
@@ -134,7 +131,7 @@ class Driver:
         finally:
             print("No player detected")
 
-
+        cv2.imshow("Camera Image", cv_image)
 
         cv2.waitKey(3)
 

@@ -9,7 +9,7 @@
         <arg name="x_pos" value="5"/>
         <arg name="y_pos" value="5"/>
         <arg name="z_pos" value="0"/>
-        <arg name="driver" default="false"/>
+        <arg name="driver" default="true"/>
     </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
