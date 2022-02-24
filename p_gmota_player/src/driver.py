@@ -59,10 +59,12 @@ class Driver:
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
 
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/red1/camera/rgb/image_raw", Image, self.callback)
+        self.image_sub = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.callback)
 
     def callback(self, data):
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
+
+        cv2.imshow("Camera Image", cv_image)
 
         if self.prey == "GREEN":
             mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
@@ -86,42 +88,53 @@ class Driver:
         try:
             # Get Object Max Area Centroid
             max_area = 0
+            max_area_Label = None
             for i in range(num_labels):
                 if i != 0 and max_area < stats[i, cv2.CC_STAT_AREA]:
                     max_area = stats[i, cv2.CC_STAT_AREA]
                     max_area_Label = i
 
-            mask2 = cv2.inRange(labels, max_area_Label, max_area_Label)
-            mask2 = mask2.astype(bool)
-            cv_image[mask2] = (0, 255, 0)
+            if max_area_Label is not None:
+                mask2 = cv2.inRange(labels, max_area_Label, max_area_Label)
+                mask2 = mask2.astype(bool)
+                if self.prey == "GREEN":
+                    cv_image[mask2] = (0, 255, 0)
+                elif self.prey == "RED":
+                    cv_image[mask2] = (0, 0, 255)
+                elif self.prey == "BLUE":
+                    cv_image[mask2] = (255, 0, 0)
 
-            # Draw Line on Centroid
-            global x_last, y_last
-            x = int(centroids[max_area_Label, 0])
-            y = int(centroids[max_area_Label, 1])
-            if x_last is not None and y_last is not None:
-                # Cross On Centroid
-                cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-                cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-                cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
-                cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
-            x_last = x
-            y_last = y
+                # Draw Line on Centroid
+                global x_last, y_last
+                x = int(centroids[max_area_Label, 0])
+                y = int(centroids[max_area_Label, 1])
+                if x_last is not None and y_last is not None:
+                    # Cross On Centroid
+                    cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
+                x_last = x
+                y_last = y
 
-            height, width, _ = cv_image.shape
+                height, width, _ = cv_image.shape
 
-            if (width/2) > x:
-                self.angle = (width/2) - x
+                if x == 150:
+                    self.angle = 0
+                elif x > 150:
+                    self.angle = -0.75
+                elif x < 150:
+                    self.angle = 0.75
 
-            # Publish position of the target
-            twist = Twist()
-            twist.linear.x = 0.5
-            twist.angular.z = self.angle
-            self.publisher_command.publish(twist)
-        except:
+                # Publish position of the target
+                twist = Twist()
+                twist.linear.x = 0.5
+                twist.angular.z = self.angle
+                self.publisher_command.publish(twist)
+        finally:
             print("No player detected")
 
-        cv2.imshow("Camera Image", cv_image)
+
 
         cv2.waitKey(3)
 
