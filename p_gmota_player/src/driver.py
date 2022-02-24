@@ -83,29 +83,43 @@ class Driver:
         _, thresh = cv2.threshold(image_grey, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(thresh, 4, cv2.CV_32S)
 
-        # Get Object Max Area Centroid
-        max_area = 0
-        for i in range(num_labels):
-            if i != 0 and max_area < stats[i, cv2.CC_STAT_AREA]:
-                max_area = stats[i, cv2.CC_STAT_AREA]
-                max_area_Label = i
+        try:
+            # Get Object Max Area Centroid
+            max_area = 0
+            for i in range(num_labels):
+                if i != 0 and max_area < stats[i, cv2.CC_STAT_AREA]:
+                    max_area = stats[i, cv2.CC_STAT_AREA]
+                    max_area_Label = i
 
-        mask2 = cv2.inRange(labels, max_area_Label, max_area_Label)
-        mask2 = mask2.astype(bool)
-        cv_image[mask2] = (0, 255, 0)
+            mask2 = cv2.inRange(labels, max_area_Label, max_area_Label)
+            mask2 = mask2.astype(bool)
+            cv_image[mask2] = (0, 255, 0)
 
-        # Draw Line on Centroid
-        global x_last, y_last
-        x = int(centroids[max_area_Label, 0])
-        y = int(centroids[max_area_Label, 1])
-        if x_last != None and y_last != None:
-            # Cross On Centroid
-            cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-            cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-            cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
-            cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
-        x_last = x
-        y_last = y
+            # Draw Line on Centroid
+            global x_last, y_last
+            x = int(centroids[max_area_Label, 0])
+            y = int(centroids[max_area_Label, 1])
+            if x_last is not None and y_last is not None:
+                # Cross On Centroid
+                cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+                cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
+                cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
+                cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
+            x_last = x
+            y_last = y
+
+            height, width, _ = cv_image.shape
+
+            if (width/2) > x:
+                self.angle = (width/2) - x
+
+            # Publish position of the target
+            twist = Twist()
+            twist.linear.x = 0.5
+            twist.angular.z = self.angle
+            self.publisher_command.publish(twist)
+        except:
+            print("No player detected")
 
         cv2.imshow("Camera Image", cv_image)
 
@@ -121,9 +135,10 @@ class Driver:
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             self.goal_active = False
             rospy.logerr(
-                'Could not transform goal from ' + msg.header.frame_id + ' to ' + target_frame + '. Will ignore this goal.')
+                'Could not transform goal from ' + msg.header.frame_id + ' to ' + target_frame + '. Will ignore this '
+                                                                                                 'goal.')
 
-    def driveStraight(self, minumum_speed=0.1, maximum_speed=1.5):
+    def driveStraight(self):
         goal_copy = copy.deepcopy(self.goal)  # make sure we don't change the stamp field of the goa
         goal_copy.header.stamp = rospy.Time.now()
 
