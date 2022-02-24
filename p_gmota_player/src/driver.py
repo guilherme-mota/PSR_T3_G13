@@ -74,8 +74,12 @@ class Driver:
         image_processed = copy.deepcopy(cv_image)
         image_processed[np.logical_not(mask)] = 0
 
+        kernel = np.ones((5, 5), np.uint8)
+        img_dilation = cv2.dilate(image_processed, kernel, iterations=2)
+
         cv2.imshow("Mask", mask)
         cv2.imshow("Image Processed", image_processed)
+        cv2.imshow("Image Dilated", img_dilation)
 
         # Get Object
         image_grey = cv2.cvtColor(image_processed, cv2.COLOR_BGR2GRAY)
