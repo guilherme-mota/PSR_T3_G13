@@ -67,7 +67,7 @@ class Driver:
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
 
         if self.prey == "GREEN":
-            mask = cv2.inRange(cv_image, (0, 0, 0), (0, 255, 0))
+            mask = cv2.inRange(cv_image, (0, 100, 0), (0, 255, 0))
         elif self.prey == "RED":
             mask = cv2.inRange(cv_image, (0, 0, 0), (0, 0, 255))
         elif self.prey == "BLUE":

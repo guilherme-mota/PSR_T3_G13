@@ -1,13 +1,14 @@
 <launch>
     <!-- Argumentos do launch file-->
     <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
-    <arg name="player_name" default="p_gmota"/>
+    <arg name="player_name" default="red1"/>
     <arg name="player_color" default="Red"/>
     <arg name="visualize" default="true"/>
     <arg name="x_pos" default="0"/>
     <arg name="y_pos" default="0"/>
     <arg name="z_pos" default="0"/>
     <arg name="driver" default="false"/>
+    <arg name="show_windows" default="false"/>
 
     <group ns="$(arg player_name)">
         <param name="tf_prefix" value="$(arg player_name)"/>
@@ -33,11 +34,4 @@
     <group if="$(arg driver)">
         <node name="$(arg player_name)" pkg="p_gmota_player" type="driver.py" output="screen"/>
     </group>
-
-    <!-- Include teleop launch -->
-<!--     <group ns="$(arg player_name)"> -->
-<!--         <node pkg="rqt_robot_steering" type="rqt_robot_steering" name="teleop_rqt" output="screen"> -->
-<!--             <param name="~default_topic" value="/$(arg player_name)/cmd_vel"/> -->
-<!--         </node> -->
-<!--     </group> -->
 </launch>
