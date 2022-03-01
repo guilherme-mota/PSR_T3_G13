@@ -18,8 +18,15 @@ from gazebo_msgs.msg import ModelState, ModelStates, ContactsState
 def callbackMsgReceived(models):
     rospy.loginfo('Received Model States Message! ')
 
-    for name in models.name:
-        print(name)
+    # Get Game Parameters
+    redTeam = rospy.get_param('/red_players')
+    greenTeam = rospy.get_param('/green_players')
+    blueTeam = rospy.get_param('/blue_players')
+
+    for player in redTeam + greenTeam + blueTeam:
+        for name in models.name:
+            if player == name:
+                print(name)
 
 
 def main():
