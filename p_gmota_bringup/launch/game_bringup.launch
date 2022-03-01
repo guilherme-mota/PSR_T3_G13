@@ -26,8 +26,8 @@
 <!--         <arg name="player_name" value="red3"/> -->
 <!--         <arg name="player_color" value="Red"/> -->
 <!--         <arg name="visualize" value="false"/> -->
-<!--         <arg name="x_pos" value="7"/> -->
-<!--         <arg name="y_pos" value="-2"/> -->
+<!--         <arg name="x_pos" value="-7"/> -->
+<!--         <arg name="y_pos" value="2"/> -->
 <!--         <arg name="z_pos" value="0"/> -->
 <!--         <arg name="driver" default="false"/> -->
 <!--     </include> -->
@@ -64,7 +64,6 @@
 <!--     </include> -->
 
     <!-- Blue Team -->
-<<<<<<< HEAD
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
 <!--         <arg name="player_name" value="blue1"/> -->
 <!--         <arg name="player_color" value="Blue"/> -->
@@ -74,17 +73,6 @@
 <!--         <arg name="z_pos" value="0"/> -->
 <!--         <arg name="driver" default="false"/> -->
 <!--     </include> -->
-=======
-    <include file="$(find p_gmota_bringup)/launch/bringup.launch">
-        <arg name="player_name" value="blue1"/>
-        <arg name="player_color" value="Blue"/>
-        <arg name="visualize" value="false"/>
-        <arg name="x_pos" value="-5"/>
-        <arg name="y_pos" value="-5"/>
-        <arg name="z_pos" value="0"/>
-        <arg name="driver" default="false"/>
-    </include>
->>>>>>> 98104ebdca9eb2ca8845deb8c7e69f7fd23d4d49
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
 <!--         <arg name="player_name" value="blue2"/> -->
