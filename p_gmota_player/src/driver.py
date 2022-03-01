@@ -90,7 +90,7 @@ class Driver:
         kernel = np.ones((5, 5), np.uint8)
         img_dilation = cv2.dilate(image_processed, kernel, iterations=2)
 
-        if show_windows:
+        if show_windows == "true":
             cv2.imshow("Mask", mask)
             cv2.imshow("Image Processed", image_processed)
             cv2.imshow("Image Dilated", img_dilation)
@@ -149,7 +149,7 @@ class Driver:
         finally:
             print("No player detected")
 
-        if show_windows:
+        if show_windows == "true":
             cv2.imshow("Camera Image", cv_image)
 
         cv2.waitKey(3)
@@ -206,7 +206,8 @@ def main():
 
     global show_windows
     show_windows = args[1]
-    print(show_windows)
+    if show_windows == "true":
+        print(show_windows)
 
     # Start driving
     driver = Driver()
