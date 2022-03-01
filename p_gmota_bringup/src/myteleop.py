@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-# ------------------------
-#   IMPORTS
-# ------------------------
+
 import rospy
 from geometry_msgs.msg import Twist
 import sys, select, os
@@ -12,14 +10,14 @@ if os.name == 'nt':
 else:
     import tty, termios
 
-BURGER_MAX_LIN_VEL = 1.20
+BURGER_MAX_LIN_VEL = 1.00
 BURGER_MAX_ANG_VEL = 2.84
 
-WAFFLE_MAX_LIN_VEL = 0.26
+WAFFLE_MAX_LIN_VEL = 1.00
 WAFFLE_MAX_ANG_VEL = 1.82
 
-LIN_VEL_STEP_SIZE = 0.05
-ANG_VEL_STEP_SIZE = 0.2
+LIN_VEL_STEP_SIZE = 0.15
+ANG_VEL_STEP_SIZE = 0.1
 
 msg = """
 Control Your TurtleBot3!

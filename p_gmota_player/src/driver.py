@@ -136,10 +136,18 @@ class Driver:
 
                 if x == 150:
                     self.angle = 0
-                elif x > 150:
-                    self.angle = -1.00
-                elif x < 150:
-                    self.angle = 1.00
+                elif 150 < x < 175:
+                    self.angle = -0.15
+                elif 175 < x < 225:
+                    self.angle = -0.3
+                elif x > 225:
+                    self.angle = -0.6
+                elif 125 < x < 150:
+                    self.angle = 0.15
+                elif 75 < x < 125:
+                    self.angle = 0.3
+                elif x < 75:
+                    self.angle = 0.6
 
                 # Publish position of the target
                 twist = Twist()
