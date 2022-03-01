@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-
+# ------------------------
+#   IMPORTS
+# ------------------------
 import rospy
 from geometry_msgs.msg import Twist
 import sys, select, os

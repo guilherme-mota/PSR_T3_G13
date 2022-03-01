@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
-
+# ------------------------
+#   IMPORTS
+# ------------------------
 import numpy as np
 import cv2
 import copy
