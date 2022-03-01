@@ -28,8 +28,8 @@
 <!--         <arg name="player_name" value="red3"/> -->
 <!--         <arg name="player_color" value="Red"/> -->
 <!--         <arg name="visualize" value="false"/> -->
-<!--         <arg name="x_pos" value="7"/> -->
-<!--         <arg name="y_pos" value="-2"/> -->
+<!--         <arg name="x_pos" value="-7"/> -->
+<!--         <arg name="y_pos" value="2"/> -->
 <!--         <arg name="z_pos" value="0"/> -->
 <!--         <arg name="driver" value="false"/> -->
 <!--         <arg name="show_windows" value="false"/> -->
