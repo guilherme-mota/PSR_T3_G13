@@ -1,8 +1,16 @@
 #!/usr/bin/python3
 
+# -------------------------------------------------------------------------------
+# Name:        Driver
+# Purpose:     Drive turtleboot
+# Author:      Grupo 13
+# Created:     01/03/2022
+# -------------------------------------------------------------------------------
+
 # ------------------------
 #   IMPORTS
 # ------------------------
+import sys
 import numpy as np
 import cv2
 import copy
@@ -18,6 +26,7 @@ from cv_bridge import CvBridge
 # -----------------------------------------------------
 x_last = None
 y_last = None
+show_windows = None
 
 
 class Driver:
@@ -64,6 +73,8 @@ class Driver:
         self.image_sub = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.callback)
 
     def callback(self, data):
+        global show_windows
+
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")  # cv_image type: numpy.ndarray
 
         if self.prey == "GREEN":
@@ -79,9 +90,10 @@ class Driver:
         kernel = np.ones((5, 5), np.uint8)
         img_dilation = cv2.dilate(image_processed, kernel, iterations=2)
 
-        cv2.imshow("Mask", mask)
-        cv2.imshow("Image Processed", image_processed)
-        cv2.imshow("Image Dilated", img_dilation)
+        if show_windows:
+            cv2.imshow("Mask", mask)
+            cv2.imshow("Image Processed", image_processed)
+            cv2.imshow("Image Dilated", img_dilation)
 
         # Get Object
         image_grey = cv2.cvtColor(image_processed, cv2.COLOR_BGR2GRAY)
@@ -137,7 +149,8 @@ class Driver:
         finally:
             print("No player detected")
 
-        cv2.imshow("Camera Image", cv_image)
+        if show_windows:
+            cv2.imshow("Camera Image", cv_image)
 
         cv2.waitKey(3)
 
@@ -189,7 +202,11 @@ def main():
     # ----------------------------
     rospy.init_node('p_gmota_driver', anonymous=False)
 
-    # camera = Camera()
+    args = rospy.myargv(argv=sys.argv)
+
+    global show_windows
+    show_windows = args[1]
+    print(show_windows)
 
     # Start driving
     driver = Driver()

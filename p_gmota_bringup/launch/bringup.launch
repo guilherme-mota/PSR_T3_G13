@@ -32,6 +32,6 @@
     </group>
 
     <group if="$(arg driver)">
-        <node name="$(arg player_name)" pkg="p_gmota_player" type="driver.py" output="screen"/>
+        <node name="$(arg player_name)" pkg="p_gmota_player" type="driver.py" output="screen" args="$(arg show_windows)"/>
     </group>
 </launch>
