@@ -113,10 +113,10 @@ class Driver:
                 y = int(centroids[max_area_Label, 1])
                 if x_last is not None and y_last is not None:
                     # Cross On Centroid
-                    cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-                    cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 2, cv2.LINE_4)
-                    cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 2, cv2.LINE_4)
-                    cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 2, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last + 5, y_last), (0, 0, 255), 1, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last - 5, y_last), (0, 0, 255), 1, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last, y_last + 5), (0, 0, 255), 1, cv2.LINE_4)
+                    cv2.line(cv_image, (x, y), (x_last, y_last - 5), (0, 0, 255), 1, cv2.LINE_4)
                 x_last = x
                 y_last = y
 
@@ -125,13 +125,13 @@ class Driver:
                 if x == 150:
                     self.angle = 0
                 elif x > 150:
-                    self.angle = -0.75
+                    self.angle = -1.00
                 elif x < 150:
-                    self.angle = 0.75
+                    self.angle = 1.00
 
                 # Publish position of the target
                 twist = Twist()
-                twist.linear.x = 0.5
+                twist.linear.x = 0.6
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
         finally:

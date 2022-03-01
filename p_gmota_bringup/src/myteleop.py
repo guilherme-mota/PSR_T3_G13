@@ -12,14 +12,14 @@ if os.name == 'nt':
 else:
     import tty, termios
 
-BURGER_MAX_LIN_VEL = 0.22
+BURGER_MAX_LIN_VEL = 1.20
 BURGER_MAX_ANG_VEL = 2.84
 
 WAFFLE_MAX_LIN_VEL = 0.26
 WAFFLE_MAX_ANG_VEL = 1.82
 
-LIN_VEL_STEP_SIZE = 0.01
-ANG_VEL_STEP_SIZE = 0.1
+LIN_VEL_STEP_SIZE = 0.05
+ANG_VEL_STEP_SIZE = 0.2
 
 msg = """
 Control Your TurtleBot3!
