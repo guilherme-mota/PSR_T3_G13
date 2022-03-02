@@ -31,12 +31,13 @@ y_last = None
 show_windows = None
 lastPosition = {'posX': 0, 'posY': 0, 'posZ': 0,
                 'oriX': 0, 'oriY': 0, 'oriZ': 0, 'oriW': 0}
+actualPosition = {'posX': 0, 'posY': 0, 'posZ': 0,
+                  'oriX': 0, 'oriY': 0, 'oriZ': 0, 'oriW': 0}
 
 
 class Driver:
-    global lastPosition
-
     def __init__(self):
+        global lastPosition, actualPosition
         self.goal = PoseStamped()
         self.goal_active = False
         self.random_goal_active = False
@@ -78,9 +79,9 @@ class Driver:
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.callback)
 
-        self.positionTimer = rospy.Timer(rospy.Duration(1), self.updatelastPos)
+        self.modelStates = rospy.Subscriber('/gazebo/model_states', ModelStates, self.updateActualPos)
 
-        self.randomGoalTimer = rospy.Timer(rospy.Duration(5), self.sendRandomGoal)
+        self.randomGoalTimer = rospy.Timer(rospy.Duration(3), self.sendRandomGoal)
 
     def callback(self, data):
         global show_windows
@@ -206,7 +207,7 @@ class Driver:
         self.speed = 0.5
 
     def sendCommandCallback(self, event):
-        print('Sending Twist Command')
+        # print('Sending Twist Command')
 
         if not self.goal_active and not self.random_goal_active:  # no goal, no movement
             self.angle = 0
@@ -219,40 +220,30 @@ class Driver:
         twist.angular.z = self.angle
         self.publisher_command.publish(twist)
 
-    def updatelastPos(self, event):
-        try:
-            Position = self.tf_buffer.lookup_transform(self.name + '/odom', self.name + '/base_footprint', rospy.Time())
-
-            lastPosition['posX'] = round(Position.transform.translation.x, 1)
-            lastPosition['posY'] = round(Position.transform.translation.y, 1)
-            lastPosition['posZ'] = round(Position.transform.translation.z, 1)
-            lastPosition['oriX'] = round(Position.transform.rotation.x, 1)
-            lastPosition['oriY'] = round(Position.transform.rotation.y, 1)
-            lastPosition['oriZ'] = round(Position.transform.rotation.z, 1)
-            lastPosition['oriW'] = round(Position.transform.rotation.w, 1)
-
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            print("Position Update Failed!")
-
-        print("")
-        print(self.name + ':')
-        print(lastPosition)
-        print("")
+    def updateActualPos(self, models):
+        global lastPosition, actualPosition
+        rospy.sleep(1)
+        i = 0
+        for name in models.name:
+            if self.name == name:
+                actualPosition['posX'] = models.pose[i].position.x
+                actualPosition['posY'] = models.pose[i].position.y
+                actualPosition['posZ'] = models.pose[i].position.z
+                actualPosition['oriX'] = models.pose[i].orientation.x
+                actualPosition['oriY'] = models.pose[i].orientation.y
+                actualPosition['oriZ'] = models.pose[i].orientation.z
+                actualPosition['oriW'] = models.pose[i].orientation.w
+            i += 1
 
     def sendRandomGoal(self, event):
-        try:
-            Position = self.tf_buffer.lookup_transform(self.name + '/odom', self.name + '/base_footprint', rospy.Time())
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            print("Position Update Failed!")
-
-        if (round(Position.transform.translation.x, 1) == lastPosition['posX'] and
-                round(Position.transform.translation.y, 1) == lastPosition['posY'] and
-                round(Position.transform.translation.z, 1) == lastPosition['posZ'] and
-                round(Position.transform.rotation.x, 1) == lastPosition['oriX'] and
-                round(Position.transform.rotation.y, 1) == lastPosition['oriY'] and
-                round(Position.transform.rotation.z, 1) == lastPosition['oriZ'] and
-                round(Position.transform.rotation.w, 1) == lastPosition['oriW']):
-
+        global lastPosition, actualPosition
+        if (actualPosition['posX'] == lastPosition['posX'] and
+                actualPosition['posY'] == lastPosition['posY'] and
+                actualPosition['posZ'] == lastPosition['posZ'] and
+                actualPosition['oriX'] == lastPosition['oriX'] and
+                actualPosition['oriY'] == lastPosition['oriY'] and
+                actualPosition['oriZ'] == lastPosition['oriZ'] and
+                actualPosition['oriW'] == lastPosition['oriW']):
             x = random.random() * 16 - 8
             y = random.random() * 5 - 2.5
 
@@ -261,6 +252,17 @@ class Driver:
 
             self.random_goal_active = True
             print(self.name + 'Sending Random Goal')
+        else:
+            actualPosition['posX'] = lastPosition['posX']
+            actualPosition['posY'] = lastPosition['posY']
+            actualPosition['posZ'] = lastPosition['posZ']
+            actualPosition['oriX'] = lastPosition['oriX']
+            actualPosition['oriY'] = lastPosition['oriY']
+            actualPosition['oriZ'] = lastPosition['oriZ']
+            actualPosition['oriW'] = lastPosition['oriW']
+
+            print(actualPosition['posX'])
+            print(lastPosition['posX'])
 
 
 def main():
