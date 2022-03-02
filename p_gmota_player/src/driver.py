@@ -206,20 +206,19 @@ class Driver:
                     elif self.prey == "BLUE":
                         cv_image2[mask2] = (255, 0, 0)
               
-            print(x)
-            #Hunting
-            if x == 150:
-                self.angle = 0
-            elif x > 150:
-                self.angle = -1.5
-            elif x < 150:
-                self.angle = 1.5
+                    #Hunting
+                    if x == 150:
+                        self.angle = 0
+                    elif x > 150:
+                        self.angle = -1.5
+                    elif x < 150:
+                        self.angle = 1.5
 
-            # Publish position of the target
-            twist = Twist()
-            twist.linear.x = 0.75
-            twist.angular.z = self.angle
-            self.publisher_command.publish(twist)
+                    # Publish position of the target
+                    twist = Twist()
+                    twist.linear.x = 0.75
+                    twist.angular.z = self.angle
+                    self.publisher_command.publish(twist)
         finally:
             # print("No player detected")
             pass
