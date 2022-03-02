@@ -11,6 +11,7 @@
 #   IMPORTS
 # ------------------------
 import sys
+import random
 import numpy as np
 import cv2
 import copy
@@ -21,19 +22,24 @@ from geometry_msgs.msg import Twist, PoseStamped
 import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for PoseStamped
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
+from gazebo_msgs.msg import ModelState, ModelStates, ContactsState
 
 # GLOBAL VARIABLES
 # -----------------------------------------------------
 x_last = None
 y_last = None
 show_windows = None
+lastPosition = {'posX': 0, 'posY': 0, 'posZ': 0,
+                'oriX': 0, 'oriY': 0, 'oriZ': 0, 'oriW': 0}
 
 
 class Driver:
+    global lastPosition
+
     def __init__(self):
         self.goal = PoseStamped()
         self.goal_active = False
-
+        self.random_goal_active = False
         self.angle = 0
         self.speed = 0
 
@@ -71,6 +77,10 @@ class Driver:
 
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.callback)
+
+        self.positionTimer = rospy.Timer(rospy.Duration(1), self.updatelastPos)
+
+        self.randomGoalTimer = rospy.Timer(rospy.Duration(5), self.sendRandomGoal)
 
     def callback(self, data):
         global show_windows
@@ -134,24 +144,30 @@ class Driver:
 
                 height, width, _ = cv_image.shape
 
+                # if x == 150:
+                #     self.angle = 0
+                # elif 150 < x < 175:
+                #     self.angle = -0.15
+                # elif 175 < x < 225:
+                #     self.angle = -0.3
+                # elif x > 225:
+                #     self.angle = -0.6
+                # elif 125 < x < 150:
+                #     self.angle = 0.15
+                # elif 75 < x < 125:
+                #     self.angle = 0.3
+                # elif x < 75:
+                #     self.angle = 0.6
                 if x == 150:
                     self.angle = 0
-                elif 150 < x < 175:
-                    self.angle = -0.15
-                elif 175 < x < 225:
-                    self.angle = -0.3
-                elif x > 225:
-                    self.angle = -0.6
-                elif 125 < x < 150:
-                    self.angle = 0.15
-                elif 75 < x < 125:
-                    self.angle = 0.3
-                elif x < 75:
-                    self.angle = 0.6
+                elif x > 150:
+                    self.angle = -1.5
+                elif x < 150:
+                    self.angle = 1.5
 
                 # Publish position of the target
                 twist = Twist()
-                twist.linear.x = 0.6
+                twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
         finally:
@@ -192,16 +208,59 @@ class Driver:
     def sendCommandCallback(self, event):
         print('Sending Twist Command')
 
-        if not self.goal_active:  # no goal, no movement
+        if not self.goal_active and not self.random_goal_active:  # no goal, no movement
             self.angle = 0
             self.speed = 0
-        else:
+        elif self.goal_active and not self.random_goal_active:
             self.driveStraight()
 
         twist = Twist()
         twist.linear.x = self.speed
         twist.angular.z = self.angle
         self.publisher_command.publish(twist)
+
+    def updatelastPos(self, event):
+        try:
+            Position = self.tf_buffer.lookup_transform(self.name + '/odom', self.name + '/base_footprint', rospy.Time())
+
+            lastPosition['posX'] = round(Position.transform.translation.x, 1)
+            lastPosition['posY'] = round(Position.transform.translation.y, 1)
+            lastPosition['posZ'] = round(Position.transform.translation.z, 1)
+            lastPosition['oriX'] = round(Position.transform.rotation.x, 1)
+            lastPosition['oriY'] = round(Position.transform.rotation.y, 1)
+            lastPosition['oriZ'] = round(Position.transform.rotation.z, 1)
+            lastPosition['oriW'] = round(Position.transform.rotation.w, 1)
+
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            print("Position Update Failed!")
+
+        print("")
+        print(self.name + ':')
+        print(lastPosition)
+        print("")
+
+    def sendRandomGoal(self, event):
+        try:
+            Position = self.tf_buffer.lookup_transform(self.name + '/odom', self.name + '/base_footprint', rospy.Time())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            print("Position Update Failed!")
+
+        if (round(Position.transform.translation.x, 1) == lastPosition['posX'] and
+                round(Position.transform.translation.y, 1) == lastPosition['posY'] and
+                round(Position.transform.translation.z, 1) == lastPosition['posZ'] and
+                round(Position.transform.rotation.x, 1) == lastPosition['oriX'] and
+                round(Position.transform.rotation.y, 1) == lastPosition['oriY'] and
+                round(Position.transform.rotation.z, 1) == lastPosition['oriZ'] and
+                round(Position.transform.rotation.w, 1) == lastPosition['oriW']):
+
+            x = random.random() * 16 - 8
+            y = random.random() * 5 - 2.5
+
+            self.speed = 0.5
+            self.angle = math.atan2(y, x)
+
+            self.random_goal_active = True
+            print(self.name + 'Sending Random Goal')
 
 
 def main():
@@ -210,12 +269,11 @@ def main():
     # ----------------------------
     rospy.init_node('p_gmota_driver', anonymous=False)
 
-    args = rospy.myargv(argv=sys.argv)
+    rospy.sleep(0.2)  # make sure the rospy time works
 
     global show_windows
+    args = rospy.myargv(argv=sys.argv)
     show_windows = args[1]
-    if show_windows == "true":
-        print(show_windows)
 
     # Start driving
     driver = Driver()
