@@ -260,7 +260,7 @@ class Driver:
                         mask2 = mask2.astype(bool)
                         cv_image2 = copy.deepcopy(cv_image)
                         
-                        mask3 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
+                        mask3 = cv2.inRange(hunter_labels, hunter_max_area_Label, hunter_max_area_Label)
                         mask3 = mask3.astype(bool)
                         cv_image3 = copy.deepcopy(cv_image)
 
