@@ -140,7 +140,6 @@ class Driver:
         # Dilation from both masks
         prey_img_dilation = cv2.dilate(prey_img_processed, kernel, iterations=2)
         hunter_img_dilation = cv2.dilate(hunter_img_processed, kernel, iterations=2)
-<<<<<<< HEAD
           
         #Convert both masks to grey img:
         prey_img_grey = cv2.cvtColor(prey_img_dilation, cv2.COLOR_BGR2GRAY)
@@ -164,28 +163,6 @@ class Driver:
         
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
-=======
-
-        # Convert both masks to grey img:
-        prey_image_grey = cv2.cvtColor(prey_img_dilation, cv2.COLOR_BGR2GRAY)
-        hunter_image_grey = cv2.cvtColor(hunter_img_dilation, cv2.COLOR_BGR2GRAY)
-
-        # Thresholding from grey image:
-        _, prey_thresh = cv2.threshold(prey_image_grey, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        _, hunter_thresh = cv2.threshold(hunter_image_grey, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-        # Merge Prey with Hunter Mask:
-        ph_img = cv2.add(prey_img_dilation, hunter_img_dilation)
-
-        # Get connected components from threshold:
-        prey_num_labels, prey_labels, prey_stats, prey_centroids = cv2.connectedComponentsWithStats(prey_thresh, 4,
-                                                                                                    cv2.CV_32S)
-        hunter_num_labels, hunter_labels, hunter_stats, hunter_centroids = cv2.connectedComponentsWithStats(
-            hunter_thresh, 4, cv2.CV_32S)
-
-        # Compare Max Area from Prey and Hunter Mask
-        # Decide if state is hunting or running
->>>>>>> 22086335db61a035a89d402dcfd49fe02fdcc2bc
         try:
             # Get Object Max Area Centroid
             prey_max_area = 0
@@ -207,17 +184,10 @@ class Driver:
                         global prey_x_last, prey_y_last
                         to_delete = []
                         exists = False
-<<<<<<< HEAD
                         (prey_cX, prey_cY) = prey_centroids[i]
                         prey_cX, prey_cY = int(prey_cX), int(prey_cY)
                         prey_rect_img = cv2.rectangle(prey_thresh, (p_x, p_y), (p_x + p_w, p_y + p_h), (255, 255, 0), -1)
                          
-=======
-                        (cX, cY) = prey_centroids[i]
-                        cX, cY = int(cX), int(cY)
-                        rect_img = cv2.rectangle(prey_thresh, (p_x, p_y), (p_x + p_w, p_y + p_h), (255, 255, 0), -1)
-
->>>>>>> 22086335db61a035a89d402dcfd49fe02fdcc2bc
                         # Draw Line on Centroid
                         prey_x = int(prey_centroids[prey_max_area_Label, 0])
                         prey_y = int(prey_centroids[prey_max_area_Label, 1])
@@ -304,7 +274,6 @@ class Driver:
                         hunter_y_last = hunter_y
                         height, width, _ = cv_image.shape
 
-<<<<<<< HEAD
 
                     if hunter_max_area_Label is not None:
                         mask3 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
@@ -338,39 +307,12 @@ class Driver:
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
         
-=======
-                if prey_max_area_Label is not None:
-                    mask2 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
-                    mask2 = mask2.astype(bool)
-                    cv_image2 = copy.deepcopy(cv_image)
-                    if self.prey == "GREEN":
-                        cv_image2[mask2] = (0, 255, 0)
-                    elif self.prey == "RED":
-                        cv_image2[mask2] = (0, 0, 255)
-                    elif self.prey == "BLUE":
-                        cv_image2[mask2] = (255, 0, 0)
-
-                    # Hunting
-                    if x == 150:
-                        self.angle = 0
-                    elif x > 150:
-                        self.angle = -1.5
-                    elif x < 150:
-                        self.angle = 1.5
-
-                    # Publish position of the target
-                    twist = Twist()
-                    twist.linear.x = 0.75
-                    twist.angular.z = self.angle
-                    self.publisher_command.publish(twist)
->>>>>>> 22086335db61a035a89d402dcfd49fe02fdcc2bc
         finally:
             # print("No player detected")
             pass
 
         # Show image processing in output
         if show_windows == "true":
-<<<<<<< HEAD
             #cv2.imshow("Prey Mask", prey_mask)
             #cv2.imshow("Prey Image Processed", prey_img_processed)
             #cv2.imshow("Prey TH", prey_thresh)
@@ -382,15 +324,6 @@ class Driver:
             
             cv2.imshow("Camera Image", cv_image)
         cv2.waitKey(3)
-=======
-            # cv2.imshow("Prey Mask", prey_mask)
-            # cv2.imshow("Prey Image Processed", prey_img_processed)
-            cv2.imshow("Prey Image Dilated", prey_img_dilation)
-            cv2.imshow("Prey-Hunter image", ph_img)
-            # cv2.imshow("Hunter Mask", hunter_mask)
-            # cv2.imshow("Hunter Image Processed", hunter_img_processed)
-            # cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
->>>>>>> 22086335db61a035a89d402dcfd49fe02fdcc2bc
 
             # cv2.imshow("Camera Image", cv_image)
         cv2.waitKey(3)
