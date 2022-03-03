@@ -306,7 +306,7 @@ class Driver:
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-                print(Fore.YELLOW + self.name + Style.RESET_ALL + Fore.RED + " is hunting." + Style.RESET_ALL )  
+                print(Fore.WHITE + Style.BRIGHT + self.name + Style.RESET_ALL + Fore.RED + " is hunting." + Style.RESET_ALL )  
 
             elif prey_max_area < hunter_max_area:
                 # Running
@@ -316,7 +316,7 @@ class Driver:
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-                print(Fore.YELLOW + self.name + Style.RESET_ALL + Fore.GREEN + " is running." + Style.RESET_ALL )  
+                print(Fore.WHITE + Style.BRIGHT + self.name + Style.RESET_ALL + Fore.GREEN + " is running." + Style.RESET_ALL )  
 
 
             elif prey_max_area_Label is None and hunter_max_area_Label is None:
