@@ -170,13 +170,15 @@ class Driver:
 
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
+        
+                    
+        #Get Object Max Area Centroid
+        prey_max_area = 0
+        hunter_max_area = 0
+        prey_max_area_Label = None
+        hunter_max_area_Label = None
+        
         try:
-            
-            #Get Object Max Area Centroid
-            prey_max_area = 0
-            hunter_max_area = 0
-            prey_max_area_Label = None
-            hunter_max_area_Label = None
 
             # Get Object Max Area from Prey
             for i in range(prey_num_labels):
@@ -291,8 +293,8 @@ class Driver:
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-            else:
-            # elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
+            # else:
+            elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
                 twist = Twist()
                 twist.linear.x = 0.0
                 twist.angular.z = 1.0
