@@ -306,6 +306,7 @@ class Driver:
             #cv2.imshow("Hunter Mask", hunter_mask)
             #cv2.imshow("Hunter Image Processed", hunter_img_processed)
             cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
+            cv2.imshow("Hunter Area  img", hunter_rect_img)
             #cv2.imshow("Camera Image", cv_image)
         
         cv2.waitKey(3)
