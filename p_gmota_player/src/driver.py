@@ -296,11 +296,8 @@ class Driver:
                         elif hunter_x < 150:
                             self.angle = 1.5
 
-            # print(prey_max_area)
-            # print(prey_max_area_Label)
-            # print(hunter_max_area_Label)
+            self.state = "stop"  # Reset State
 
-            self.state = "stop"
             if prey_max_area > hunter_max_area:
                 # Hunting
                 self.state = "hunting"
@@ -355,9 +352,7 @@ class Driver:
         goal_copy = copy.deepcopy(self.goal)  # make sure we don't change the stamp field of the goa
         goal_copy.header.stamp = rospy.Time.now()
 
-        print('Transforming pose')
         goal_in_base_link = self.tf_buffer.transform(goal_copy, self.name + '/base_footprint', rospy.Duration(1))
-        print('Pose transformed')
 
         x = goal_in_base_link.pose.position.x
         y = goal_in_base_link.pose.position.y
@@ -366,8 +361,6 @@ class Driver:
         self.speed = 0.5
 
     def sendCommandCallback(self, event):
-        # print('Sending Twist Command')
-
         if not self.goal_active and not self.random_goal_active:  # no goal, no movement
             self.angle = 0
             self.speed = 0
