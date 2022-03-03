@@ -10,7 +10,7 @@
         <arg name="y_pos" value="2"/>
         <arg name="z_pos" value="0"/>
         <arg name="driver" value="true"/>
-        <arg name="show_windows" value="true"/>
+        <arg name="show_windows" value="false"/>
     </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
@@ -44,7 +44,7 @@
         <arg name="y_pos" value="5"/>
         <arg name="z_pos" value="0"/>
         <arg name="driver" value="true"/>
-        <arg name="show_windows" value="true"/>
+        <arg name="show_windows" value="false"/>
     </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
@@ -79,7 +79,7 @@
         <arg name="y_pos" value="1"/>
         <arg name="z_pos" value="0"/>
         <arg name="driver" value="true"/>
-        <arg name="show_windows" value="true"/>
+        <arg name="show_windows" value="false"/>
     </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
