@@ -317,7 +317,7 @@ class Driver:
             elif prey_max_area_Label is None and hunter_max_area_Label is None:
                 if self.state is not "hunting" and self.state is not "running" and not self.goal_active:
                     twist = Twist()
-                    twist.linear.x = 0.3
+                    twist.linear.x = 0.2
                     x = random.random() * 16 - 8
                     y = random.random() * 5 - 2.5
                     twist.angular.z = math.atan2(y, x)
