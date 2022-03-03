@@ -5,12 +5,12 @@
     <include file="$(find p_gmota_bringup)/launch/bringup.launch">
         <arg name="player_name" value="red1"/>
         <arg name="player_color" value="Red"/>
-        <arg name="visualize" value="true"/>
+        <arg name="visualize" value="false"/>
         <arg name="x_pos" value="0"/>
         <arg name="y_pos" value="2"/>
         <arg name="z_pos" value="0"/>
         <arg name="driver" value="true"/>
-        <arg name="show_windows" value="false"/>
+        <arg name="show_windows" value="true"/>
     </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
@@ -36,16 +36,16 @@
 <!--     </include> -->
 
     <!-- Green Team -->
-<!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
-<!--         <arg name="player_name" value="green1"/> -->
-<!--         <arg name="player_color" value="Green"/> -->
-<!--         <arg name="visualize" value="false"/> -->
-<!--         <arg name="x_pos" value="-5"/> -->
-<!--         <arg name="y_pos" value="5"/> -->
-<!--         <arg name="z_pos" value="0"/> -->
-<!--         <arg name="driver" value="true"/> -->
-<!--         <arg name="show_windows" value="false"/> -->
-<!--     </include> -->
+    <include file="$(find p_gmota_bringup)/launch/bringup.launch">
+        <arg name="player_name" value="green1"/>
+        <arg name="player_color" value="Green"/>
+        <arg name="visualize" value="false"/>
+        <arg name="x_pos" value="-5"/>
+        <arg name="y_pos" value="5"/>
+        <arg name="z_pos" value="0"/>
+        <arg name="driver" value="true"/>
+        <arg name="show_windows" value="false"/>
+    </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
 <!--         <arg name="player_name" value="green2"/> -->
@@ -71,16 +71,16 @@
 
 
     <!-- Blue Team -->
-<!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
-<!--         <arg name="player_name" value="blue1"/> -->
-<!--         <arg name="player_color" value="Blue"/> -->
-<!--         <arg name="visualize" value="false"/> -->
-<!--         <arg name="x_pos" value="-5"/> -->
-<!--         <arg name="y_pos" value="1"/> -->
-<!--         <arg name="z_pos" value="0"/> -->
-<!--         <arg name="driver" value="true"/> -->
-<!--         <arg name="show_windows" value="false"/> -->
-<!--     </include> -->
+    <include file="$(find p_gmota_bringup)/launch/bringup.launch">
+        <arg name="player_name" value="blue1"/>
+        <arg name="player_color" value="Blue"/>
+        <arg name="visualize" value="false"/>
+        <arg name="x_pos" value="-5"/>
+        <arg name="y_pos" value="1"/>
+        <arg name="z_pos" value="0"/>
+        <arg name="driver" value="true"/>
+        <arg name="show_windows" value="false"/>
+    </include>
 
 <!--     <include file="$(find p_gmota_bringup)/launch/bringup.launch"> -->
 <!--         <arg name="player_name" value="blue2"/> -->

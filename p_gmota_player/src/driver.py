@@ -320,22 +320,19 @@ class Driver:
             elif prey_max_area_Label is None and hunter_max_area_Label is None:
                 if self.state is not "hunting" and self.state is not "running" and not self.goal_active:
                     twist = Twist()
-                    twist.linear.x = 0.0
-                    twist.angular.z = 0.3
+                    twist.linear.x = 0.3
+                    x = random.random() * 16 - 8
+                    y = random.random() * 5 - 2.5
+                    twist.angular.z = math.atan2(y, x)
                     self.publisher_command.publish(twist)
 
 
         finally:
-            # print("No player detected")
             pass
 
         # Show image processing in output
         if show_windows == "true":
-            # cv2.imshow("Prey Mask", prey_mask)
-            # cv2.imshow("Prey Image Processed", prey_img_processed)
             cv2.imshow("Prey Image Dilated", prey_img_dilation)
-            # cv2.imshow("Hunter Mask", hunter_mask)
-            # cv2.imshow("Hunter Image Processed", hunter_img_processed)
             cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
             cv2.imshow("Camera Image", cv_image)
 
