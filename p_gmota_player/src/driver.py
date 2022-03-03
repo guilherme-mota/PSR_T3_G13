@@ -187,8 +187,6 @@ class Driver:
                     p_h = prey_stats[i, cv2.CC_STAT_HEIGHT]
                     prey_max_area = prey_stats[i, cv2.CC_STAT_AREA]
                     prey_max_area_Label = i
-                    print(prey_max_area_Label)
-                    print(prey_max_area)
 
                     if prey_max_area_Label is not None:
                         global prey_x_last, prey_y_last
@@ -280,8 +278,6 @@ class Driver:
                             self.angle = 1.5
 
             if prey_max_area > hunter_max_area:               
-                print(prey_max_area)
-                print(hunter_max_area)
                 #Hunting
                 twist = Twist()
                 twist.linear.x = 0.75
@@ -298,7 +294,7 @@ class Driver:
             else:
                 twist = Twist()
                 twist.linear.x = 0.0
-                twist.angular.z = 0.5
+                twist.angular.z = 1.5
                 self.publisher_command.publish(twist)
 
         
