@@ -302,13 +302,15 @@ class Driver:
                 actualPosition['oriY'] == lastPosition['oriY'] and
                 actualPosition['oriZ'] == lastPosition['oriZ'] and
                 actualPosition['oriW'] == lastPosition['oriW']):
+
             x = random.random() * 16 - 8
             y = random.random() * 5 - 2.5
 
+            # Publish position of the target
+            self.random_goal_active = True
             self.speed = 0.5
             self.angle = math.atan2(y, x)
 
-            self.random_goal_active = True
             print(self.name + 'Sending Random Goal')
         else:
             lastPosition['posX'] = actualPosition['posX']
@@ -318,6 +320,8 @@ class Driver:
             lastPosition['oriY'] = actualPosition['oriY']
             lastPosition['oriZ'] = actualPosition['oriZ']
             lastPosition['oriW'] = actualPosition['oriW']
+
+            self.random_goal_active = False
 
 
 def main():
