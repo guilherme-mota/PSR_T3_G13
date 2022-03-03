@@ -212,26 +212,6 @@ class Driver:
                         prey_y_last = prey_y
                         height, width, _ = cv_image.shape
 
-
-                    if prey_max_area_Label is not None:
-                        mask2 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
-                        mask2 = mask2.astype(bool)
-                        cv_image2 = copy.deepcopy(cv_image)
-                        if self.prey == "GREEN":
-                            cv_image2[mask2] = (0, 255, 0)
-                        elif self.prey == "RED":
-                            cv_image2[mask2] = (0, 0, 255)
-                        elif self.prey == "BLUE":
-                            cv_image2[mask2] = (255, 0, 0)
-
-                        #Hunting
-                        if prey_x == 150:
-                            self.angle = 0
-                        elif prey_x > 150:
-                            self.angle = -1.5
-                        elif prey_x < 150:
-                            self.angle = 1.5
-
             for j in range(hunter_num_labels):
 
                 if j != 0 and hunter_max_area < hunter_stats[i, cv2.CC_STAT_AREA]:
@@ -275,16 +255,36 @@ class Driver:
                         height, width, _ = cv_image.shape
 
 
-                    if hunter_max_area_Label is not None:
+                    if prey_max_area_Label is not None or hunter_max_area_Label is not None:
+                        mask2 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
+                        mask2 = mask2.astype(bool)
+                        cv_image2 = copy.deepcopy(cv_image)
+                        
                         mask3 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
                         mask3 = mask3.astype(bool)
                         cv_image3 = copy.deepcopy(cv_image)
+
+                        if self.prey == "GREEN":
+                            cv_image2[mask2] = (0, 255, 0)
+                        elif self.prey == "RED":
+                            cv_image2[mask2] = (0, 0, 255)
+                        elif self.prey == "BLUE":
+                            cv_image2[mask2] = (255, 0, 0)
+
                         if self.hunter == "GREEN":
                             cv_image3[mask3] = (0, 255, 0)
                         elif self.hunter == "RED":
                             cv_image3[mask3] = (0, 0, 255)
                         elif self.hunter == "BLUE":
                             cv_image3[mask3] = (255, 0, 0)
+
+                        #Hunting
+                        if prey_x == 150:
+                            self.angle = 0
+                        elif prey_x > 150:
+                            self.angle = -1.5
+                        elif prey_x < 150:
+                            self.angle = 1.5
 
                         #Running
                         if hunter_x == 150:
@@ -294,18 +294,18 @@ class Driver:
                         elif hunter_x < 150:
                             self.angle = 1.5
 
-            if prey_max_area_Label > hunter_max_area_Label:               
-                #Hunting
-                twist = Twist()
-                twist.linear.x = 0.75
-                twist.angular.z = self.angle
-                self.publisher_command.publish(twist)
-            else:
-                #Running
-                twist = Twist()
-                twist.linear.x = -0.75
-                twist.angular.z = self.angle
-                self.publisher_command.publish(twist)
+                        if prey_max_area_Label > hunter_max_area_Label:               
+                            #Hunting
+                            twist = Twist()
+                            twist.linear.x = 0.75
+                            twist.angular.z = self.angle
+                            self.publisher_command.publish(twist)
+                        else:
+                            #Running
+                            twist = Twist()
+                            twist.linear.x = -0.75
+                            twist.angular.z = self.angle
+                            self.publisher_command.publish(twist)
         
         finally:
             # print("No player detected")
@@ -321,8 +321,8 @@ class Driver:
             #cv2.imshow("Hunter Mask", hunter_mask)
             #cv2.imshow("Hunter Image Processed", hunter_img_processed)
             cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
-            
             cv2.imshow("Camera Image", cv_image)
+        
         cv2.waitKey(3)
 
             # cv2.imshow("Camera Image", cv_image)
