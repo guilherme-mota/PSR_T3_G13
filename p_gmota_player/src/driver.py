@@ -294,7 +294,7 @@ class Driver:
             else:
                 twist = Twist()
                 twist.linear.x = 0.0
-                twist.angular.z = 1.5
+                twist.angular.z = 1.0
                 self.publisher_command.publish(twist)
 
         
