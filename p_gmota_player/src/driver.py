@@ -72,9 +72,8 @@ class Driver:
         elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
             print('Player name is ' + Fore.GREEN + self.name + Style.RESET_ALL)  # Print Player name
             print('Player team is' + Fore.GREEN + 'Green' + Style.RESET_ALL)
-            print('Player ' + Fore.GREEN + self.name + Style.RESET_ALL + ' hunts ' + Fore.BLUE + str(
-                blueTeam) + Style.RESET_ALL + ' and runs from '
-                  + Fore.RED + str(redTeam) + Style.RESET_ALL)
+            print('Player ' + Fore.GREEN + self.name + Style.RESET_ALL + ' hunts ' + Fore.BLUE + str(blueTeam) +
+                  Style.RESET_ALL + ' and runs from ' + Fore.RED + str(redTeam) + Style.RESET_ALL)
             self.team = "GREEN"
             self.prey = "BLUE"
             self.hunter = "RED"
@@ -83,8 +82,7 @@ class Driver:
             print('Player name is ' + Fore.BLUE + self.name + Style.RESET_ALL)  # Print Player name
             print('Player team is ' + Fore.BLUE + 'Blue' + Style.RESET_ALL)
             print('Player ' + Fore.BLUE + self.name + Style.RESET_ALL + ' hunts ' + Fore.RED + str(
-                redTeam) + Style.RESET_ALL + ' and runs from '
-                  + Fore.GREEN + str(greenTeam) + Style.RESET_ALL)
+                redTeam) + Style.RESET_ALL + ' and runs from ' + Fore.GREEN + str(greenTeam) + Style.RESET_ALL)
             self.team = "BLUE"
             self.prey = "RED"
             self.hunter = "GREEN"
