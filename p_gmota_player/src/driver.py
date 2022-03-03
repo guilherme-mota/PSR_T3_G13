@@ -14,6 +14,8 @@ import sys
 import time
 import random
 import numpy as np
+import colorama
+from colorama import Fore, Back, Style
 import cv2
 import copy
 import math
@@ -57,24 +59,30 @@ class Driver:
         greenTeam = rospy.get_param('/green_players')
         blueTeam = rospy.get_param('/blue_players')
 
-        # Print Player Information and assing their team and states
+        # Print Player Information
         if (self.name == redTeam[0]) or (self.name == redTeam[1]) or (self.name == redTeam[2]):
-            print('Player team is Red')
-            print('Player ' + self.name + ' hunts ' + str(greenTeam) + ' and runs from ' + str(blueTeam))
+            print('Player name is ' + Fore.RED + self.name + Style.RESET_ALL)  # Print Player name
+            print('Player team is' + Fore.RED + 'Red' + Style.RESET_ALL)
+            print('Player ' + Fore.RED + self.name + Style.RESET_ALL + ' hunts ' + Fore.GREEN + str(greenTeam)
+                  + Style.RESET_ALL + ' and runs from ' + Fore.BLUE + str(blueTeam) + Style.RESET_ALL)
             self.team = "RED"
             self.prey = "GREEN"
             self.hunter = "BLUE"
             self.state = "hunt"
         elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
-            print('Player team is Green')
-            print('Player ' + self.name + ' hunts ' + str(blueTeam) + ' and runs from ' + str(redTeam))
+            print('Player name is ' + Fore.GREEN + self.name + Style.RESET_ALL)  # Print Player name
+            print('Player team is' + Fore.GREEN + 'Green' + Style.RESET_ALL)
+            print('Player ' + Fore.GREEN + self.name + Style.RESET_ALL + ' hunts ' + Fore.BLUE + str(blueTeam) +
+                  Style.RESET_ALL + ' and runs from ' + Fore.RED + str(redTeam) + Style.RESET_ALL)
             self.team = "GREEN"
             self.prey = "BLUE"
             self.hunter = "RED"
             self.state = "hunt"
         elif (self.name == blueTeam[0]) or (self.name == blueTeam[1]) or (self.name == blueTeam[2]):
-            print('Player team is Blue')
-            print('Player ' + self.name + ' hunts ' + str(redTeam) + ' and runs from ' + str(greenTeam))
+            print('Player name is ' + Fore.BLUE + self.name + Style.RESET_ALL)  # Print Player name
+            print('Player team is ' + Fore.BLUE + 'Blue' + Style.RESET_ALL)
+            print('Player ' + Fore.BLUE + self.name + Style.RESET_ALL + ' hunts ' + Fore.RED + str(
+                redTeam) + Style.RESET_ALL + ' and runs from ' + Fore.GREEN + str(greenTeam) + Style.RESET_ALL)
             self.team = "BLUE"
             self.prey = "RED"
             self.hunter = "GREEN"
