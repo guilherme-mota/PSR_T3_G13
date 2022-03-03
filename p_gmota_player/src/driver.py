@@ -290,7 +290,7 @@ class Driver:
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
             
-            else:
+            elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
                 twist = Twist()
                 twist.linear.x = 0.0
                 twist.angular.z = 1.0
