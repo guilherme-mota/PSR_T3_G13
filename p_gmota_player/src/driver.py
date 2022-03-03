@@ -306,6 +306,8 @@ class Driver:
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
+                print(Fore.YELLOW + self.name + Style.RESET_ALL + Fore.CYAN + "is hunting." + Style.RESET_ALL )  
+
             elif prey_max_area < hunter_max_area:
                 # Running
                 self.state = "running"
@@ -314,6 +316,9 @@ class Driver:
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
+                print(Fore.YELLOW + self.name + Style.RESET_ALL + Fore.CYAN + "is running." + Style.RESET_ALL )  
+
+
             elif prey_max_area_Label is None and hunter_max_area_Label is None:
                 if self.state is not "hunting" and self.state is not "running" and not self.goal_active:
                     twist = Twist()
