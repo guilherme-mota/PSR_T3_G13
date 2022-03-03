@@ -160,7 +160,6 @@ class Driver:
         hunter_num_labels, hunter_labels, hunter_stats, hunter_centroids = cv2.connectedComponentsWithStats(hunter_thresh, 4, cv2.CV_32S)
         
 
-        
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
         try:
@@ -170,6 +169,7 @@ class Driver:
             prey_max_area_Label = None
             hunter_max_area_Label = None
 
+            # Get Object Max Area from Prey
             for i in range(prey_num_labels):
 
                 if i != 0 and prey_max_area < prey_stats[i, cv2.CC_STAT_AREA]:
@@ -177,13 +177,13 @@ class Driver:
                     p_y = prey_stats[i, cv2.CC_STAT_TOP]
                     p_w = prey_stats[i, cv2.CC_STAT_WIDTH]
                     p_h = prey_stats[i, cv2.CC_STAT_HEIGHT]
-                    p_area = prey_stats[i, cv2.CC_STAT_AREA]
+                    prey_max_area = prey_stats[i, cv2.CC_STAT_AREA]
                     prey_max_area_Label = i
+                    print(prey_max_area_Label)
+                    print(prey_max_area)
 
-                    if p_area > 200:
+                    if prey_max_area_Label is not None:
                         global prey_x_last, prey_y_last
-                        to_delete = []
-                        exists = False
                         (prey_cX, prey_cY) = prey_centroids[i]
                         prey_cX, prey_cY = int(prey_cX), int(prey_cY)
                         prey_rect_img = cv2.rectangle(prey_thresh, (p_x, p_y), (p_x + p_w, p_y + p_h), (255, 255, 0), -1)
@@ -207,29 +207,38 @@ class Driver:
                                 cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y + 5), (0, 0, 255), 1, cv2.LINE_4)
                                 cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
                        
-                        cv2.imshow("Rect img", prey_rect_img)
+                        cv2.imshow("Prey Area Image", prey_rect_img)
                         prey_x_last = prey_x
                         prey_y_last = prey_y
                         height, width, _ = cv_image.shape
+                        
+                        #Hunting
+                        if prey_x == 150:
+                            self.angle = 0
+                        elif prey_x > 150:
+                            self.angle = -1.5
+                        elif prey_x < 150:
+                            self.angle = 1.5
 
+            #Get Max Area from Hunting
             for j in range(hunter_num_labels):
 
-                if j != 0 and hunter_max_area < hunter_stats[i, cv2.CC_STAT_AREA]:
+                if j != 0 and hunter_max_area < hunter_stats[j, cv2.CC_STAT_AREA]:
                     h_x = hunter_stats[j, cv2.CC_STAT_LEFT]
                     h_y = hunter_stats[j, cv2.CC_STAT_TOP]
                     h_w = hunter_stats[j, cv2.CC_STAT_WIDTH]
                     h_h = hunter_stats[j, cv2.CC_STAT_HEIGHT]
-                    h_area = hunter_stats[j, cv2.CC_STAT_AREA]
+                    hunter_max_area = hunter_stats[j, cv2.CC_STAT_AREA]
                     hunter_max_area_Label = j
+                    print(hunter_max_area_Label)
+                    print(hunter_max_area)
 
-                    if h_area > 200:
+                    if hunter_max_area_Label is not None:
                         global hunter_x_last, hunter_y_last
-                        to_delete = []
-                        exists = False
-                        (hunter_cX, hunter_cY) = hunter_centroids[i]
+                        (hunter_cX, hunter_cY) = hunter_centroids[j]
                         hunter_cX, hunter_cY = int(hunter_cX), int(hunter_cY)
                         hunter_rect_img = cv2.rectangle(hunter_thresh, (h_x, h_y), (h_x + h_w, h_y + h_h), (255, 255, 0), -1)
-                            
+
                         # Draw Line on Centroid
                         hunter_x = int(hunter_centroids[hunter_max_area_Label, 0])
                         hunter_y = int(hunter_centroids[hunter_max_area_Label, 1])
@@ -249,42 +258,10 @@ class Driver:
                                 cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 255), 1, cv2.LINE_4)
                                 cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
                         
-                        cv2.imshow("Rect img", hunter_rect_img)
+                        cv2.imshow("Hunter Area  img", hunter_rect_img)
                         hunter_x_last = hunter_x
                         hunter_y_last = hunter_y
-                        height, width, _ = cv_image.shape
-
-
-                    if prey_max_area_Label is not None or hunter_max_area_Label is not None:
-                        mask2 = cv2.inRange(prey_labels, prey_max_area_Label, prey_max_area_Label)
-                        mask2 = mask2.astype(bool)
-                        cv_image2 = copy.deepcopy(cv_image)
-                        
-                        mask3 = cv2.inRange(hunter_labels, hunter_max_area_Label, hunter_max_area_Label)
-                        mask3 = mask3.astype(bool)
-                        cv_image3 = copy.deepcopy(cv_image)
-
-                        if self.prey == "GREEN":
-                            cv_image2[mask2] = (0, 255, 0)
-                        elif self.prey == "RED":
-                            cv_image2[mask2] = (0, 0, 255)
-                        elif self.prey == "BLUE":
-                            cv_image2[mask2] = (255, 0, 0)
-
-                        if self.hunter == "GREEN":
-                            cv_image3[mask3] = (0, 255, 0)
-                        elif self.hunter == "RED":
-                            cv_image3[mask3] = (0, 0, 255)
-                        elif self.hunter == "BLUE":
-                            cv_image3[mask3] = (255, 0, 0)
-
-                        #Hunting
-                        if prey_x == 150:
-                            self.angle = 0
-                        elif prey_x > 150:
-                            self.angle = -1.5
-                        elif prey_x < 150:
-                            self.angle = 1.5
+                        height, width, _ = cv_image.shape                    
 
                         #Running
                         if hunter_x == 150:
@@ -294,18 +271,18 @@ class Driver:
                         elif hunter_x < 150:
                             self.angle = 1.5
 
-                        if prey_max_area_Label > hunter_max_area_Label:               
-                            #Hunting
-                            twist = Twist()
-                            twist.linear.x = 0.75
-                            twist.angular.z = self.angle
-                            self.publisher_command.publish(twist)
-                        else:
-                            #Running
-                            twist = Twist()
-                            twist.linear.x = -0.75
-                            twist.angular.z = self.angle
-                            self.publisher_command.publish(twist)
+            if prey_max_area > hunter_max_area:               
+                #Hunting
+                twist = Twist()
+                twist.linear.x = 0.75
+                twist.angular.z = self.angle
+                self.publisher_command.publish(twist)
+            else:
+                #Running
+                twist = Twist()
+                twist.linear.x = -0.75
+                twist.angular.z = self.angle
+                self.publisher_command.publish(twist)
         
         finally:
             # print("No player detected")
@@ -321,11 +298,8 @@ class Driver:
             #cv2.imshow("Hunter Mask", hunter_mask)
             #cv2.imshow("Hunter Image Processed", hunter_img_processed)
             cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
-            cv2.imshow("Camera Image", cv_image)
+            #cv2.imshow("Camera Image", cv_image)
         
-        cv2.waitKey(3)
-
-            # cv2.imshow("Camera Image", cv_image)
         cv2.waitKey(3)
 
     def goalReceivedCallback(self, msg):
