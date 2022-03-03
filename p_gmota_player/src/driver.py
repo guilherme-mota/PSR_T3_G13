@@ -319,8 +319,6 @@ class Driver:
             lastPosition['oriZ'] = actualPosition['oriZ']
             lastPosition['oriW'] = actualPosition['oriW']
 
-            print(lastPosition['posX'])
-
 
 def main():
     # ----------------------------
