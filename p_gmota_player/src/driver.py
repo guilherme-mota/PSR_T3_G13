@@ -215,7 +215,7 @@ class Driver:
                                 cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y + 5), (0, 0, 255), 1, cv2.LINE_4)
                                 cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
                        
-                        cv2.imshow("Prey Area Image", prey_rect_img)
+                        #cv2.imshow("Prey Area Image", prey_rect_img)
                         prey_x_last = prey_x
                         prey_y_last = prey_y
                         height, width, _ = cv_image.shape
@@ -238,8 +238,8 @@ class Driver:
                     h_h = hunter_stats[j, cv2.CC_STAT_HEIGHT]
                     hunter_max_area = hunter_stats[j, cv2.CC_STAT_AREA]
                     hunter_max_area_Label = j
-                    print(hunter_max_area_Label)
-                    print(hunter_max_area)
+                    # print(hunter_max_area_Label)
+                    # print(hunter_max_area)
 
                     if hunter_max_area_Label is not None:
                         global hunter_x_last, hunter_y_last
@@ -266,7 +266,7 @@ class Driver:
                                 cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 255), 1, cv2.LINE_4)
                                 cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
                         
-                        cv2.imshow("Hunter Area  img", hunter_rect_img)
+                        #cv2.imshow("Hunter Area  img", hunter_rect_img)
                         hunter_x_last = hunter_x
                         hunter_y_last = hunter_y
                         height, width, _ = cv_image.shape                    
@@ -280,17 +280,27 @@ class Driver:
                             self.angle = 1.5
 
             if prey_max_area > hunter_max_area:               
+                print(prey_max_area)
+                print(hunter_max_area)
                 #Hunting
                 twist = Twist()
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-            else:
+            
+            elif prey_max_area > hunter_max_area:
                 #Running
                 twist = Twist()
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
+            
+            else:
+                twist = Twist()
+                twist.linear.x = 0.0
+                twist.angular.z = 0.5
+                self.publisher_command.publish(twist)
+
         
         finally:
             # print("No player detected")
