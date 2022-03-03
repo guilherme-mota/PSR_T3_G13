@@ -305,12 +305,12 @@ class Driver:
 
         # Show image processing in output
         if show_windows == "true":
-            cv2.imshow("Prey Mask", prey_mask)
+            #cv2.imshow("Prey Mask", prey_mask)
             #cv2.imshow("Prey Image Processed", prey_img_processed)
             cv2.imshow("Prey Image Dilated", prey_img_dilation)
             #cv2.imshow("Hunter Mask", hunter_mask)
             #cv2.imshow("Hunter Image Processed", hunter_img_processed)
-            #cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
+            cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
             cv2.imshow("Camera Image", cv_image)
         
         cv2.waitKey(3)
