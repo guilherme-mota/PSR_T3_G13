@@ -147,26 +147,27 @@ class Driver:
         # Dilation from both masks
         prey_img_dilation = cv2.dilate(prey_img_processed, kernel, iterations=2)
         hunter_img_dilation = cv2.dilate(hunter_img_processed, kernel, iterations=2)
-          
-        #Convert both masks to grey img:
+
+        # Convert both masks to grey img:
         prey_img_grey = cv2.cvtColor(prey_img_dilation, cv2.COLOR_BGR2GRAY)
         hunter_img_grey = cv2.cvtColor(hunter_img_dilation, cv2.COLOR_BGR2GRAY)
-        
-        #Closing operation from grey img:
+
+        # Closing operation from grey img:
         prey_img_closing = cv2.morphologyEx(prey_img_grey, cv2.MORPH_CLOSE, kernel)
         hunter_img_closing = cv2.morphologyEx(hunter_img_grey, cv2.MORPH_CLOSE, kernel)
-        
-        #Thresholding from grey image:
+
+        # Thresholding from grey image:
         _, prey_thresh = cv2.threshold(prey_img_closing, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         _, hunter_thresh = cv2.threshold(hunter_img_closing, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        
-        #Merge Prey with Hunter Mask:
+
+        # Merge Prey with Hunter Mask:
         ph_img = cv2.add(prey_img_dilation, hunter_img_dilation)
 
-        #Get connected components from threshold:
-        prey_num_labels, prey_labels, prey_stats, prey_centroids = cv2.connectedComponentsWithStats(prey_thresh, 4, cv2.CV_32S)
-        hunter_num_labels, hunter_labels, hunter_stats, hunter_centroids = cv2.connectedComponentsWithStats(hunter_thresh, 4, cv2.CV_32S)
-        
+        # Get connected components from threshold:
+        prey_num_labels, prey_labels, prey_stats, prey_centroids = cv2.connectedComponentsWithStats(prey_thresh, 4,
+                                                                                                    cv2.CV_32S)
+        hunter_num_labels, hunter_labels, hunter_stats, hunter_centroids = cv2.connectedComponentsWithStats(
+            hunter_thresh, 4, cv2.CV_32S)
 
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
@@ -195,33 +196,42 @@ class Driver:
                         global prey_x_last, prey_y_last
                         (prey_cX, prey_cY) = prey_centroids[i]
                         prey_cX, prey_cY = int(prey_cX), int(prey_cY)
-                        prey_rect_img = cv2.rectangle(prey_thresh, (p_x, p_y), (p_x + p_w, p_y + p_h), (255, 255, 0), -1)
-                         
+                        prey_rect_img = cv2.rectangle(prey_thresh, (p_x, p_y), (p_x + p_w, p_y + p_h), (255, 255, 0),
+                                                      -1)
+
                         # Draw Line on Centroid
                         prey_x = int(prey_centroids[prey_max_area_Label, 0])
                         prey_y = int(prey_centroids[prey_max_area_Label, 1])
                         if prey_x_last is not None and prey_y_last is not None:
-                            
-                            p_dist = ((prey_x - prey_x_last)**2 + (prey_y - prey_y_last)**2)**(1/2)
+
+                            p_dist = ((prey_x - prey_x_last) ** 2 + (prey_y - prey_y_last) ** 2) ** (1 / 2)
                             if p_dist < 10:
-                            # Cross On Centroid
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last + 5, prey_y_last), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last - 5, prey_y_last), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last, prey_y_last + 5), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last, prey_y_last - 5), (0, 0, 255), 1, cv2.LINE_4)
-                                
+                                # Cross On Centroid
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last + 5, prey_y_last), (0, 0, 255),
+                                         1, cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last - 5, prey_y_last), (0, 0, 255),
+                                         1, cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last, prey_y_last + 5), (0, 0, 255),
+                                         1, cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x_last, prey_y_last - 5), (0, 0, 255),
+                                         1, cv2.LINE_4)
+
                             else:
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x + 5, prey_y), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x - 5, prey_y), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y + 5), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
-                       
-                        #cv2.imshow("Prey Area Image", prey_rect_img)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x + 5, prey_y), (0, 0, 255), 1,
+                                         cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x - 5, prey_y), (0, 0, 255), 1,
+                                         cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y + 5), (0, 0, 255), 1,
+                                         cv2.LINE_4)
+                                cv2.line(prey_rect_img, (prey_x, prey_y), (prey_x, prey_y - 5), (0, 0, 255), 1,
+                                         cv2.LINE_4)
+
+                                # cv2.imshow("Prey Area Image", prey_rect_img)
                         prey_x_last = prey_x
                         prey_y_last = prey_y
                         height, width, _ = cv_image.shape
-                        
-                        #Hunting
+
+                        # Hunting
                         if prey_x == 150:
                             self.angle = 0
                         elif prey_x > 150:
@@ -229,7 +239,7 @@ class Driver:
                         elif prey_x < 150:
                             self.angle = 1.5
 
-            #Get Max Area from Hunting
+            # Get Max Area from Hunting
             for j in range(hunter_num_labels):
 
                 if j != 0 and hunter_max_area < hunter_stats[j, cv2.CC_STAT_AREA]:
@@ -244,51 +254,60 @@ class Driver:
                         global hunter_x_last, hunter_y_last
                         (hunter_cX, hunter_cY) = hunter_centroids[j]
                         hunter_cX, hunter_cY = int(hunter_cX), int(hunter_cY)
-                        hunter_rect_img = cv2.rectangle(hunter_thresh, (h_x, h_y), (h_x + h_w, h_y + h_h), (255, 255, 255), -1)
+                        hunter_rect_img = cv2.rectangle(hunter_thresh, (h_x, h_y), (h_x + h_w, h_y + h_h),
+                                                        (255, 255, 255), -1)
 
                         # Draw Line on Centroid
                         hunter_x = int(hunter_centroids[hunter_max_area_Label, 0])
                         hunter_y = int(hunter_centroids[hunter_max_area_Label, 1])
                         if hunter_x_last is not None and hunter_y_last is not None:
-                            
-                            h_dist = ((hunter_x - hunter_x_last)**2 + (hunter_y - hunter_y_last)**2)**(1/2)
+
+                            h_dist = ((hunter_x - hunter_x_last) ** 2 + (hunter_y - hunter_y_last) ** 2) ** (1 / 2)
                             if h_dist < 10:
-                            # Cross On Centroid
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last + 5, hunter_y_last), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last - 5, hunter_y_last), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last + 5), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last - 5), (0, 0, 0), 1, cv2.LINE_4)
-                                
+                                # Cross On Centroid
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last + 5, hunter_y_last),
+                                         (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last - 5, hunter_y_last),
+                                         (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last + 5),
+                                         (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last - 5),
+                                         (0, 0, 0), 1, cv2.LINE_4)
+
                             else:
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x + 5, hunter_y), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x - 5, hunter_y), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 0), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 0), 1, cv2.LINE_4) 
-                        
-                        #cv2.imshow("Hunter Area  img", hunter_rect_img)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x + 5, hunter_y), (0, 0, 0), 1,
+                                         cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x - 5, hunter_y), (0, 0, 0), 1,
+                                         cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 0), 1,
+                                         cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 0), 1,
+                                         cv2.LINE_4)
+
+                                # cv2.imshow("Hunter Area  img", hunter_rect_img)
                         hunter_x_last = hunter_x
                         hunter_y_last = hunter_y
-                        height, width, _ = cv_image.shape                    
+                        height, width, _ = cv_image.shape
 
-                        #Running
+                        # Running
                         if hunter_x == 150:
                             self.angle = 0
                         elif hunter_x > 150:
                             self.angle = -1.5
                         elif hunter_x < 150:
                             self.angle = 1.5
-            
+
             print(prey_max_area)
             print(prey_max_area_Label)
-            if prey_max_area > hunter_max_area:               
-                #Hunting
+            if prey_max_area > hunter_max_area:
+                # Hunting
                 twist = Twist()
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-            
+
             elif prey_max_area < hunter_max_area:
-                #Running
+                # Running
                 twist = Twist()
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
@@ -300,21 +319,21 @@ class Driver:
                 twist.angular.z = 1.0
                 self.publisher_command.publish(twist)
 
-        
+
         finally:
             # print("No player detected")
             pass
 
         # Show image processing in output
         if show_windows == "true":
-            #cv2.imshow("Prey Mask", prey_mask)
-            #cv2.imshow("Prey Image Processed", prey_img_processed)
+            # cv2.imshow("Prey Mask", prey_mask)
+            # cv2.imshow("Prey Image Processed", prey_img_processed)
             cv2.imshow("Prey Image Dilated", prey_img_dilation)
-            #cv2.imshow("Hunter Mask", hunter_mask)
-            #cv2.imshow("Hunter Image Processed", hunter_img_processed)
+            # cv2.imshow("Hunter Mask", hunter_mask)
+            # cv2.imshow("Hunter Image Processed", hunter_img_processed)
             cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
             cv2.imshow("Camera Image", cv_image)
-        
+
         cv2.waitKey(3)
 
     def goalReceivedCallback(self, msg):
@@ -390,8 +409,6 @@ class Driver:
             self.random_goal_active = True
             self.speed = 0.5
             self.angle = math.atan2(y, x)
-
-            print(self.name + 'Sending Random Goal')
         else:
             lastPosition['posX'] = actualPosition['posX']
             lastPosition['posY'] = actualPosition['posY']
