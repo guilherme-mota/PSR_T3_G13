@@ -304,6 +304,7 @@ class Driver:
             if prey_max_area > hunter_max_area:
                 # Hunting
                 self.state = "hunting"
+                self.goal_active = False
                 twist = Twist()
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
@@ -311,6 +312,7 @@ class Driver:
             elif prey_max_area < hunter_max_area:
                 # Running
                 self.state = "running"
+                self.goal_active = False
                 twist = Twist()
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
