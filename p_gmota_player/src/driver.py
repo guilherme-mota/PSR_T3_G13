@@ -67,7 +67,7 @@ class Driver:
             self.team = "RED"
             self.prey = "GREEN"
             self.hunter = "BLUE"
-            self.state = "hunt"
+            self.state = "stop"
         elif (self.name == greenTeam[0]) or (self.name == greenTeam[1]) or (self.name == greenTeam[2]):
             print('Player name is ' + Fore.GREEN + self.name + Style.RESET_ALL)  # Print Player name
             print('Player team is' + Fore.GREEN + 'Green' + Style.RESET_ALL)
@@ -76,7 +76,7 @@ class Driver:
             self.team = "GREEN"
             self.prey = "BLUE"
             self.hunter = "RED"
-            self.state = "hunt"
+            self.state = "stop"
         elif (self.name == blueTeam[0]) or (self.name == blueTeam[1]) or (self.name == blueTeam[2]):
             print('Player name is ' + Fore.BLUE + self.name + Style.RESET_ALL)  # Print Player name
             print('Player team is ' + Fore.BLUE + 'Blue' + Style.RESET_ALL)
@@ -85,7 +85,7 @@ class Driver:
             self.team = "BLUE"
             self.prey = "RED"
             self.hunter = "GREEN"
-            self.state = "hunt"
+            self.state = "stop"
 
         self.publisher_command = rospy.Publisher('/' + self.name + '/cmd_vel', Twist, queue_size=1)
 
@@ -169,16 +169,15 @@ class Driver:
         hunter_num_labels, hunter_labels, hunter_stats, hunter_centroids = cv2.connectedComponentsWithStats(
             hunter_thresh, 4, cv2.CV_32S)
 
-        #Compare Max Area from Prey and Hunter Mask
-        #Decide if state is hunting or running
-        
-                    
-        #Get Object Max Area Centroid
+        # Compare Max Area from Prey and Hunter Mask
+        # Decide if state is hunting or running
+
+        # Get Object Max Area Centroid
         prey_max_area = 0
         hunter_max_area = 0
         prey_max_area_Label = None
         hunter_max_area_Label = None
-        
+
         try:
 
             # Get Object Max Area from Prey
@@ -297,27 +296,31 @@ class Driver:
                         elif hunter_x < 150:
                             self.angle = 1.5
 
-            print(prey_max_area)
-            print(prey_max_area_Label)
+            # print(prey_max_area)
+            # print(prey_max_area_Label)
+            # print(hunter_max_area_Label)
+
+            self.state = "stop"
             if prey_max_area > hunter_max_area:
                 # Hunting
+                self.state = "hunting"
                 twist = Twist()
                 twist.linear.x = 0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-
             elif prey_max_area < hunter_max_area:
                 # Running
+                self.state = "running"
                 twist = Twist()
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-            # else:
-            elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
-                twist = Twist()
-                twist.linear.x = 0.0
-                twist.angular.z = 1.0
-                self.publisher_command.publish(twist)
+            elif prey_max_area_Label is None and hunter_max_area_Label is None:
+                if self.state is not "hunting" and self.state is not "running" and not self.goal_active:
+                    twist = Twist()
+                    twist.linear.x = 0.0
+                    twist.angular.z = 0.3
+                    self.publisher_command.publish(twist)
 
 
         finally:
