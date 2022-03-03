@@ -52,7 +52,6 @@ class Driver:
 
         self.name = rospy.get_name()
         self.name = self.name.strip('/')  # Remove initial /
-        print('Player name is ' + self.name)  # Print Player name
 
         # Get Game Parameters
         redTeam = rospy.get_param('/red_players')
