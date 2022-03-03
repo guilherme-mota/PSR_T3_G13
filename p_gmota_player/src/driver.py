@@ -170,6 +170,7 @@ class Driver:
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
         try:
+
             # Get Object Max Area Centroid
             prey_max_area = 0
             hunter_max_area = 0
@@ -242,7 +243,7 @@ class Driver:
                         global hunter_x_last, hunter_y_last
                         (hunter_cX, hunter_cY) = hunter_centroids[j]
                         hunter_cX, hunter_cY = int(hunter_cX), int(hunter_cY)
-                        hunter_rect_img = cv2.rectangle(hunter_thresh, (h_x, h_y), (h_x + h_w, h_y + h_h), (255, 255, 0), -1)
+                        hunter_rect_img = cv2.rectangle(hunter_thresh, (h_x, h_y), (h_x + h_w, h_y + h_h), (255, 255, 255), -1)
 
                         # Draw Line on Centroid
                         hunter_x = int(hunter_centroids[hunter_max_area_Label, 0])
@@ -252,16 +253,16 @@ class Driver:
                             h_dist = ((hunter_x - hunter_x_last)**2 + (hunter_y - hunter_y_last)**2)**(1/2)
                             if h_dist < 10:
                             # Cross On Centroid
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last + 5, hunter_y_last), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last - 5, hunter_y_last), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last + 5), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last - 5), (0, 0, 255), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last + 5, hunter_y_last), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last - 5, hunter_y_last), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last + 5), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x_last, hunter_y_last - 5), (0, 0, 0), 1, cv2.LINE_4)
                                 
                             else:
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x + 5, hunter_y), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x - 5, hunter_y), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 255), 1, cv2.LINE_4)
-                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 255), 1, cv2.LINE_4) 
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x + 5, hunter_y), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x - 5, hunter_y), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y + 5), (0, 0, 0), 1, cv2.LINE_4)
+                                cv2.line(hunter_rect_img, (hunter_x, hunter_y), (hunter_x, hunter_y - 5), (0, 0, 0), 1, cv2.LINE_4) 
                         
                         #cv2.imshow("Hunter Area  img", hunter_rect_img)
                         hunter_x_last = hunter_x
@@ -275,7 +276,9 @@ class Driver:
                             self.angle = -1.5
                         elif hunter_x < 150:
                             self.angle = 1.5
-
+            
+            print(prey_max_area)
+            print(prey_max_area_Label)
             if prey_max_area > hunter_max_area:               
                 #Hunting
                 twist = Twist()
@@ -289,8 +292,8 @@ class Driver:
                 twist.linear.x = -0.75
                 twist.angular.z = self.angle
                 self.publisher_command.publish(twist)
-            
-            elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
+            else:
+            # elif prey_max_area_Label == 0 and hunter_max_area_Label == 0:
                 twist = Twist()
                 twist.linear.x = 0.0
                 twist.angular.z = 1.0
@@ -309,7 +312,7 @@ class Driver:
             #cv2.imshow("Hunter Mask", hunter_mask)
             #cv2.imshow("Hunter Image Processed", hunter_img_processed)
             #cv2.imshow("Hunter Image Dilated", hunter_img_dilation)
-            #cv2.imshow("Camera Image", cv_image)
+            cv2.imshow("Camera Image", cv_image)
         
         cv2.waitKey(3)
 
