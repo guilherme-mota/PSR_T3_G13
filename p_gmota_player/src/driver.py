@@ -152,6 +152,7 @@ class Driver:
         prey_img_grey = cv2.cvtColor(prey_img_dilation, cv2.COLOR_BGR2GRAY)
         hunter_img_grey = cv2.cvtColor(hunter_img_dilation, cv2.COLOR_BGR2GRAY)
         
+        #Closing operation from grey img:
         prey_img_closing = cv2.morphologyEx(prey_img_grey, cv2.MORPH_CLOSE, kernel)
         hunter_img_closing = cv2.morphologyEx(hunter_img_grey, cv2.MORPH_CLOSE, kernel)
         
@@ -170,8 +171,8 @@ class Driver:
         #Compare Max Area from Prey and Hunter Mask
         #Decide if state is hunting or running
         try:
-
-            # Get Object Max Area Centroid
+            
+            #Get Object Max Area Centroid
             prey_max_area = 0
             hunter_max_area = 0
             prey_max_area_Label = None
@@ -236,8 +237,6 @@ class Driver:
                     h_h = hunter_stats[j, cv2.CC_STAT_HEIGHT]
                     hunter_max_area = hunter_stats[j, cv2.CC_STAT_AREA]
                     hunter_max_area_Label = j
-                    # print(hunter_max_area_Label)
-                    # print(hunter_max_area)
 
                     if hunter_max_area_Label is not None:
                         global hunter_x_last, hunter_y_last
